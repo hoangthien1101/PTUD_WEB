@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using webAPI.Data;
 
@@ -11,9 +12,11 @@ using webAPI.Data;
 namespace MyWebApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250414110838_update_MaTK_into_Id_int")]
+    partial class update_MaTK_into_Id_int
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -197,30 +200,6 @@ namespace MyWebApi.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("tbl_GiamGia", (string)null);
-                });
-
-            modelBuilder.Entity("MyWebApi.Model.HinhAnhPhong", b =>
-                {
-                    b.Property<int>("IdHinhAnh")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdHinhAnh"));
-
-                    b.Property<int>("MaPhong")
-                        .HasColumnType("int");
-
-                    b.Property<bool?>("isUsed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("path")
-                        .HasColumnType("varchar(max)");
-
-                    b.HasKey("IdHinhAnh");
-
-                    b.HasIndex("MaPhong");
-
-                    b.ToTable("tbl_HinhAnhPhong", (string)null);
                 });
 
             modelBuilder.Entity("MyWebApi.Model.HoaDon", b =>
@@ -463,11 +442,11 @@ namespace MyWebApi.Migrations
 
             modelBuilder.Entity("MyWebApi.Model.TaiKhoan", b =>
                 {
-                    b.Property<int>("MaTK")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MaTK"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("CreateAt")
                         .HasColumnType("datetime");
@@ -509,7 +488,7 @@ namespace MyWebApi.Migrations
                     b.Property<bool?>("Xoa")
                         .HasColumnType("bit");
 
-                    b.HasKey("MaTK");
+                    b.HasKey("Id");
 
                     b.HasIndex("LoaiTK");
 
@@ -623,17 +602,6 @@ namespace MyWebApi.Migrations
                     b.Navigation("Phong");
 
                     b.Navigation("TrangThaiDatPhong");
-                });
-
-            modelBuilder.Entity("MyWebApi.Model.HinhAnhPhong", b =>
-                {
-                    b.HasOne("MyWebApi.Model.Phong", "Phong")
-                        .WithMany("HinhAnhPhongs")
-                        .HasForeignKey("MaPhong")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Phong");
                 });
 
             modelBuilder.Entity("MyWebApi.Model.HoaDon", b =>
@@ -781,8 +749,6 @@ namespace MyWebApi.Migrations
             modelBuilder.Entity("MyWebApi.Model.Phong", b =>
                 {
                     b.Navigation("DatPhongs");
-
-                    b.Navigation("HinhAnhPhongs");
                 });
 
             modelBuilder.Entity("MyWebApi.Model.PhuongThucThanhToan", b =>

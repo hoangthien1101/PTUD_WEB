@@ -11,7 +11,7 @@ namespace MyWebApi.Model
     public class TaiKhoan
     {
 
-        public string MaTK { get; set; }
+        public int MaTK { get; set; }
         public string? TenTK { get; set; }
         public string? MatKhau { get; set; }
         public string? HinhAnh { get; set; }
@@ -19,10 +19,10 @@ namespace MyWebApi.Model
         public string? Phone { get; set; }
         public string? Email { get; set; }
         public bool? IsVerified { get; set; }
-
         public DateTime CreateAt { get; set; }
         public bool? Xoa { get; set; }
 
+        
         // Navigation property
         public int? LoaiTK { get; set; }
         public virtual VaiTro VaiTro { get; set; }
