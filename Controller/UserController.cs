@@ -46,6 +46,26 @@ namespace MyWebApi.Controllers
             var result = await _userRepo.AddUser(uservm);
             return result;
         }
+        
+        [HttpPost("RegisterUser")]
+        public IActionResult RegisterUser([FromForm]RegisterUser registerUser)
+        {
+            return Ok(_userRepo.RegisterUser(registerUser));
+        }
+
+        [HttpPut("Update")]
+        public IActionResult EditUser(string TenTK, EditUser edituser)
+        {
+            return Ok(_userRepo.EditUser(TenTK, edituser));
+        }
+
+        [HttpDelete("Delete")]
+        public IActionResult DeleteUser(string TenTK)
+        {
+            return Ok(_userRepo.DeleteUser(TenTK));
+        }
+
+        
     }
 }
 
