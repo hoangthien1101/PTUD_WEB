@@ -4,7 +4,7 @@ namespace MyWebApi.ViewModel
 {
     public class UserVM
     {
-        public string MaTK { get; set; }
+        public int MaTK { get; set; }
         public string? TenTK { get; set; }
         public string? MatKhau { get; set; }
         public string? HinhAnh { get; set; }
@@ -23,7 +23,7 @@ namespace MyWebApi.ViewModel
 
     public class AddUser
     {
-        public string? MaTK { get; set; }
+        public int MaTK { get; set; }
         public string? TenTK { get; set; }
         public string? MatKhau { get; set; }
         public string? TenHienThi { get; set; }
@@ -40,7 +40,7 @@ namespace MyWebApi.ViewModel
 
     public class RegisterUser
     {
-        public string? MaTK { get; set; }
+        public int MaTK { get; set; }
         public string? TenTK { get; set; }
         public string? MatKhau { get; set; }
         public string? ReMatKhau { get; set; }

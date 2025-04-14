@@ -14,7 +14,7 @@ namespace MyWebApi.Services
         Task<JsonResult> AddUser(AddUser uservm);
         LoginVM CheckUser(string check);
         JsonResult EditUser(string TenTK, EditUser edituser);
-        JsonResult DeleteUser(string TenTK);      
+        JsonResult DeleteUser(string TenTK);
         JsonResult RegisterUser(RegisterUser registerUser);
 
     }
@@ -133,7 +133,7 @@ namespace MyWebApi.Services
             var checkUser = _context.TaiKhoans.FirstOrDefault(c => c.TenTK == registerUser.TenTK);
             if (checkUser == null)
             {
-                if(registerUser.MatKhau == registerUser.ReMatKhau)
+                if (registerUser.MatKhau == registerUser.ReMatKhau)
                 {
                     var newUser = new TaiKhoan
                     {
