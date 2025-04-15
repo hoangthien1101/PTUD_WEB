@@ -42,6 +42,7 @@ builder.Services.AddSwaggerGen(setup =>
 // Register services
 builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<ILoginRepo, LoginRepo>();
+builder.Services.AddScoped<IVaiTroRepo, VaiTroRepo>();
 
 //Connection String Config
 builder.Services.AddDbContext<AppDbContext>(options =>

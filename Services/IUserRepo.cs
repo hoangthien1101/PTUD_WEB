@@ -52,7 +52,6 @@ namespace MyWebApi.Services
             {
                 var _user = new LoginVM
                 {
-                    MaTK = user.MaTK,
                     TenTK = user.TenTK,
                     MatKhau = user.MatKhau,
                     TenLoai = user.VaiTro.TenLoai,
@@ -66,10 +65,16 @@ namespace MyWebApi.Services
         {
             if (CheckUser(uservm.TenTK) == null)
             {
-                //string pass = PasswordHasher.GetRandomPassword();
+                if (string.IsNullOrEmpty(uservm.MatKhau))
+                {
+                    return new JsonResult("Mật khẩu không được để trống")
+                    {
+                        StatusCode = StatusCodes.Status400BadRequest
+                    };
+                }
+
                 var user = new TaiKhoan
                 {
-                    MaTK = uservm.MaTK,
                     TenTK = uservm.TenTK,
                     MatKhau = PasswordHasher.HashPassword(uservm.MatKhau),
                     TenHienThi = uservm.TenHienThi,
@@ -133,6 +138,14 @@ namespace MyWebApi.Services
             var checkUser = _context.TaiKhoans.FirstOrDefault(c => c.TenTK == registerUser.TenTK);
             if (checkUser == null)
             {
+                if (string.IsNullOrEmpty(registerUser.MatKhau))
+                {
+                    return new JsonResult("Mật khẩu không được để trống")
+                    {
+                        StatusCode = StatusCodes.Status400BadRequest
+                    };
+                }
+
                 if(registerUser.MatKhau == registerUser.ReMatKhau)
                 {
                     var newUser = new TaiKhoan

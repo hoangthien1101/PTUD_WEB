@@ -11,7 +11,7 @@ namespace MyWebApi.Model
     public class TaiKhoan
     {
 
-        public string MaTK { get; set; }
+        public int MaTK { get; set; }
         public string? TenTK { get; set; }
         public string? MatKhau { get; set; }
         public string? HinhAnh { get; set; }

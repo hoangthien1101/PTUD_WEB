@@ -46,7 +46,7 @@ namespace MyWebApi.Services
                     {
                         Subject = new ClaimsIdentity(new Claim[]
                         {
-                            new Claim(ClaimTypes.NameIdentifier, user.MaTK),
+                            new Claim(ClaimTypes.NameIdentifier, user.MaTK.ToString()),
                             new Claim(ClaimTypes.Name, user.TenTK),
                             new Claim(ClaimTypes.Role, user.TenLoai),
                         }),

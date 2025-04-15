@@ -64,8 +64,6 @@ namespace MyWebApi.Controllers
         {
             return Ok(_userRepo.DeleteUser(TenTK));
         }
-
-        
     }
 }
 
