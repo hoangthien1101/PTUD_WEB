@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using webAPI.Data;
 
@@ -11,9 +12,11 @@ using webAPI.Data;
 namespace MyWebApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250414113547_add_tbl_HinhAnhPhong")]
+    partial class add_tbl_HinhAnhPhong
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -201,24 +204,16 @@ namespace MyWebApi.Migrations
 
             modelBuilder.Entity("MyWebApi.Model.HinhAnhPhong", b =>
                 {
-                    b.Property<int>("IdHinhAnh")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdHinhAnh"));
-
-                    b.Property<int>("MaPhong")
-                        .HasColumnType("int");
+                    b.Property<string>("Path")
+                        .HasColumnType("varchar(max)");
 
                     b.Property<bool?>("isUsed")
                         .HasColumnType("bit");
 
-                    b.Property<string>("path")
-                        .HasColumnType("varchar(max)");
-
-                    b.HasKey("IdHinhAnh");
-
-                    b.HasIndex("MaPhong");
+                    b.HasKey("Id");
 
                     b.ToTable("tbl_HinhAnhPhong", (string)null);
                 });
@@ -368,6 +363,9 @@ namespace MyWebApi.Migrations
 
                     b.Property<string>("HinhAnh")
                         .HasColumnType("nvarchar(MAX)");
+
+                    b.Property<int>("IdHinhAnh")
+                        .HasColumnType("int");
 
                     b.Property<int?>("MaLoaiPhong")
                         .HasColumnType("int");
@@ -629,7 +627,7 @@ namespace MyWebApi.Migrations
                 {
                     b.HasOne("MyWebApi.Model.Phong", "Phong")
                         .WithMany("HinhAnhPhongs")
-                        .HasForeignKey("MaPhong")
+                        .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

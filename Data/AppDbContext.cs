@@ -7,8 +7,6 @@ using MyWebApi.Data.Config;
 using MyWebApi.Model;
 
 
-
-
 namespace webAPI.Data
 {
     public class AppDbContext : DbContext
@@ -55,10 +53,9 @@ namespace webAPI.Data
             modelBuilder.ApplyConfiguration(new HoaDonConfig());
             modelBuilder.ApplyConfiguration(new PhuongThucThanhToanConfig());
             modelBuilder.ApplyConfiguration(new ChiTietHoaDonDVConfig());
+            modelBuilder.ApplyConfiguration(new HinhAnhPhongConfig());
 
             base.OnModelCreating(modelBuilder);
-
-
 
         }
 

@@ -39,6 +39,9 @@ namespace MyWebApi.Data.Config
                 .HasForeignKey(p => p.MaLoaiPhong);
 
 
+
+
+
         }
     }
 }

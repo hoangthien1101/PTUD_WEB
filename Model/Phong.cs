@@ -15,7 +15,6 @@ namespace MyWebApi.Model
         public string? MoTa { get; set; }
 
         public bool? Xoa { get; set; }
-
         //Navigation
         public int? MaLoaiPhong { get; set; }
         public LoaiPhong LoaiPhong { get; set; }
@@ -24,6 +23,7 @@ namespace MyWebApi.Model
         public virtual TrangThaiPhong TrangThaiPhong { get; set; }
 
         public virtual ICollection<DatPhong> DatPhongs { get; set; }
+        public virtual ICollection<HinhAnhPhong> HinhAnhPhongs { get; set; }
 
 
     }

@@ -23,6 +23,7 @@ namespace MyWebApi.ViewModel
 
     public class AddUser
     {
+        public int MaTK { get; set; }
         public string? TenTK { get; set; }
         public string? MatKhau { get; set; }
         public string? TenHienThi { get; set; }
