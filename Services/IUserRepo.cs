@@ -138,7 +138,6 @@ namespace MyWebApi.Services
             var checkUser = _context.TaiKhoans.FirstOrDefault(c => c.TenTK == registerUser.TenTK);
             if (checkUser == null)
             {
-<<<<<<< HEAD
                 if (string.IsNullOrEmpty(registerUser.MatKhau))
                 {
                     return new JsonResult("Mật khẩu không được để trống")
@@ -148,9 +147,6 @@ namespace MyWebApi.Services
                 }
 
                 if(registerUser.MatKhau == registerUser.ReMatKhau)
-=======
-                if (registerUser.MatKhau == registerUser.ReMatKhau)
->>>>>>> 67eaf7ef79599e2a7dfe81153036c100e5b2de4b
                 {
                     var newUser = new TaiKhoan
                     {

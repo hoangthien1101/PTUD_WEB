@@ -16,6 +16,11 @@ namespace MyWebApi.ViewModel
         public virtual ICollection<KhachHang> KhachHangs { get; set; }
         public virtual ICollection<NhanVien> NhanViens { get; set; }
     }
+
+    public class AddVaiTro
+    {
+        public string? TenLoai { get; set; }
+    }
 }
 
 
