@@ -45,6 +45,9 @@ builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<ILoginRepo, LoginRepo>();
 builder.Services.AddScoped<IVaiTroRepo, VaiTroRepo>();
 builder.Services.AddScoped<ITrangThaiThanhToanRepo, TrangThaiThanhToanRepo>();
+builder.Services.AddScoped<IPhongRepo, PhongRepo>();
+builder.Services.AddScoped<ILoaiPhongRepo, LoaiPhongRepo>();
+builder.Services.AddScoped<ITrangThaiPhongRepo, TrangThaiPhongRepo>();
 //Connection String Config
 builder.Services.AddDbContext<AppDbContext>(options =>
      options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

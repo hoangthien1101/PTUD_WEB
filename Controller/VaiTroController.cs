@@ -23,12 +23,33 @@ namespace MyWebApi.Controllers
             return Ok(vaiTro);
         }
 
-        // [HttpGet("GetById")]
-        // public IActionResult GetById(int id)
-        // {
-        //     var vaiTro = _vaiTroRepo.GetById(id);
-        //     return Ok(vaiTro);
-        // }
+        [HttpGet("GetById")]
+        public IActionResult GetById(int id)
+        {
+            var vaiTro = _vaiTroRepo.GetById(id);
+            return Ok(vaiTro);
+        }
+
+        [HttpPost("Create")]
+        public IActionResult Create(AddVaiTro addVaiTro)
+        {
+            var vaiTro = _vaiTroRepo.Create(addVaiTro);
+            return Ok(vaiTro);
+        }
+
+        [HttpPut("Update")]
+        public IActionResult Update(int idVaiTro, AddVaiTro addVaiTro)
+        {
+            var vaiTro = _vaiTroRepo.Update(idVaiTro, addVaiTro);
+            return Ok(vaiTro);
+        }
+
+        [HttpDelete("Delete")]
+        public IActionResult Delete(int id)
+        {
+            var vaiTro = _vaiTroRepo.Delete(id);
+            return Ok(vaiTro);
+        }
     }
 }   
 

@@ -26,6 +26,8 @@ namespace webAPI.Data
 
         public DbSet<Phong> Phongs { get; set; }
 
+        public DbSet<TrangThaiPhong> TrangThaiPhongs { get; set; }
+
         public DbSet<KhachHang> KhachHangs { get; set; }
         public DbSet<TrangThaiThanhToan> TrangThaiThanhToans { get; set; }
         public DbSet<TrangThaiDatPhong> TrangThaiDatPhongs { get; set; }
