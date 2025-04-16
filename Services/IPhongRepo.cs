@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using webAPI.Data;
 using MyWebApi.ViewModel;
 using MyWebApi.Model;
+using MyWebApi.Service;
 
 namespace MyWebApi.Services
 {
@@ -9,17 +10,21 @@ namespace MyWebApi.Services
     {
         List<PhongMD> GetAll();
         JsonResult GetBySoPhong(string SoPhong);
-        Task<JsonResult> Create(AddPhong addPhong);
+        Task<JsonResult> Create(AddPhong addPhong, List<IFormFile> files);
         JsonResult Update(string SoPhong, UpdatePhong updatePhong);
         JsonResult Delete(string SoPhong);
     }
     public class PhongRepo : IPhongRepo
     {
         private readonly AppDbContext _context;
+        private readonly IWriteFileRepository _writeFile;
+        private readonly IHinhAnhPhongService _hinhAnhPhong;
 
-        public PhongRepo(AppDbContext context)
+        public PhongRepo(AppDbContext context, IWriteFileRepository writeFile, IHinhAnhPhongService hinhAnhPhong)
         {
             _context = context;
+            _writeFile = writeFile;
+            _hinhAnhPhong = hinhAnhPhong;
         }
 
         public List<PhongMD> GetAll()
@@ -63,7 +68,7 @@ namespace MyWebApi.Services
             };
         }
 
-        public async Task<JsonResult> Create(AddPhong addPhong)
+        public async Task<JsonResult> Create(AddPhong addPhong, List<IFormFile> files)
         {
             var check = _context.Phongs.FirstOrDefault(p => p.SoPhong == addPhong.SoPhong);
             if (check == null)
@@ -72,13 +77,31 @@ namespace MyWebApi.Services
                 {
                     SoPhong = addPhong.SoPhong,
                     SoNguoi = addPhong.SoNguoi,
-                    HinhAnh = addPhong.HinhAnh,
+                    // HinhAnh = addPhong.HinhAnh,
                     MoTa = addPhong.MoTa,
                     MaLoaiPhong = addPhong.MaLoaiPhong,
                     TrangThai = addPhong.TrangThai,
                 };
                 _context.Phongs.Add(phong);
                 await _context.SaveChangesAsync();
+
+                int MaPhong = phong.MaPhong;
+                string folder = "Phong";
+
+                List<string> imageUrls = await _writeFile.WriteFileAsync(files, folder);
+                if (imageUrls.Count != 0)
+                {
+                    foreach (var url in imageUrls)
+                    {
+                        var image = new HinhAnhPhong
+                        {
+                            MaPhong = MaPhong,
+                            path = url
+                        };
+                        _context.HinhAnhPhongs.Add(image);
+                    }
+                    _context.SaveChanges();
+                }
                 return new JsonResult("Thêm phòng thành công")
                 {
                     StatusCode = StatusCodes.Status201Created

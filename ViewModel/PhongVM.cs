@@ -31,7 +31,7 @@ namespace MyWebApi.ViewModel
     {
         public string? SoPhong { get; set; }
         public int? SoNguoi { get; set; }
-        public string? HinhAnh { get; set; }
+        // public string? HinhAnh { get; set;}
         public string? MoTa { get; set; }
         public int? MaLoaiPhong { get; set; }
         public int? TrangThai { get; set; }

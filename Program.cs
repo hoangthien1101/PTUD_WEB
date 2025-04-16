@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using MyWebApi.ViewModel;
+using MyWebApi.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +50,8 @@ builder.Services.AddScoped<ITrangThaiThanhToanRepo, TrangThaiThanhToanRepo>();
 builder.Services.AddScoped<IPhongRepo, PhongRepo>();
 builder.Services.AddScoped<ILoaiPhongRepo, LoaiPhongRepo>();
 builder.Services.AddScoped<ITrangThaiPhongRepo, TrangThaiPhongRepo>();
+builder.Services.AddScoped<IHinhAnhPhongService, HinhAnhPhongService>();
+builder.Services.AddScoped<IWriteFileRepository, WriteFileRepository>();
 //Connection String Config
 builder.Services.AddDbContext<AppDbContext>(options =>
      options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

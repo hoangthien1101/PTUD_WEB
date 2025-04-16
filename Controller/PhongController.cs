@@ -31,9 +31,9 @@ namespace MyWebApi.Controllers
         }
 
         [HttpPost("Create")]
-        public async Task<JsonResult>Create([FromForm]AddPhong addPhong)
+        public async Task<JsonResult>Create([FromForm]AddPhong addPhong, List<IFormFile> files)
         {
-            var phong = await _phongRepo.Create(addPhong);
+            var phong = await _phongRepo.Create(addPhong,files);
             return phong;
         }
 

@@ -32,7 +32,7 @@ namespace webAPI.Data
         public DbSet<TrangThaiThanhToan> TrangThaiThanhToans { get; set; }
         public DbSet<TrangThaiDatPhong> TrangThaiDatPhongs { get; set; }
         public DbSet<DatPhong> DatPhongs { get; set; }
-
+        public DbSet<HinhAnhPhong> HinhAnhPhongs {get; set;}
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
