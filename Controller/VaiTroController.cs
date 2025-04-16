@@ -23,12 +23,12 @@ namespace MyWebApi.Controllers
             return Ok(vaiTro);
         }
 
-        [HttpGet("GetById")]
-        public IActionResult GetById(int id)
-        {
-            var vaiTro = _vaiTroRepo.GetById(id);
-            return Ok(vaiTro);
-        }
+        // [HttpGet("GetById")]
+        // public IActionResult GetById(int id)
+        // {
+        //     var vaiTro = _vaiTroRepo.GetById(id);
+        //     return Ok(vaiTro);
+        // }
     }
 }   
 
