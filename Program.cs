@@ -50,13 +50,6 @@ builder.Services.AddScoped<ITrangThaiThanhToanRepo, TrangThaiThanhToanRepo>();
 builder.Services.AddScoped<IPhongRepo, PhongRepo>();
 builder.Services.AddScoped<ILoaiPhongRepo, LoaiPhongRepo>();
 builder.Services.AddScoped<ITrangThaiPhongRepo, TrangThaiPhongRepo>();
-builder.Services.AddScoped<IHinhAnhPhongService, HinhAnhPhongService>();
-builder.Services.AddScoped<IWriteFileRepository, WriteFileRepository>();
-builder.Services.AddScoped<ITrangThaiDatPhongRepo, TrangThaiDatPhongRepo>();
-builder.Services.AddScoped<IKhachHangRepo, KhachHangRepo>();
-builder.Services.AddScoped<IDatPhongRepo, DatPhongRepo>();
-builder.Services.AddScoped<ISendMailService, SendEmailService>();
-builder.Services.AddScoped<IForgotPasswordService, ForgotPasswordService>();
 //Connection String Config
 builder.Services.AddDbContext<AppDbContext>(options =>
      options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

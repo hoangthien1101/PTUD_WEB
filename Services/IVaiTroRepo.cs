@@ -17,7 +17,6 @@ namespace MyWebApi.Services
         JsonResult Update(int idVaiTro, AddVaiTro addVaiTro);
         JsonResult Delete(int id);
     }
-
     public class VaiTroRepo : IVaiTroRepo
     {
         private readonly AppDbContext _context;
@@ -45,14 +44,15 @@ namespace MyWebApi.Services
                     StatusCode = StatusCodes.Status404NotFound
                 };
             }
-            var vaitro = new VaiTroVM {
+            var vaiTroVM = new VaiTroVM
+            {
                 TenLoai = vaiTro.TenLoai
             };
-            return new JsonResult(vaitro)
+            return new JsonResult(vaiTroVM)
             {
                 StatusCode = StatusCodes.Status200OK
             };
-        }
+        }   
 
         public JsonResult Create(AddVaiTro addVaiTro)
         {
@@ -64,52 +64,52 @@ namespace MyWebApi.Services
                     StatusCode = StatusCodes.Status400BadRequest
                 };
             }
-            var vaiTros = new VaiTro 
-            {
-                 TenLoai = addVaiTro.TenLoai 
+            var vaiTros = new VaiTro
+            {   
+                TenLoai = addVaiTro.TenLoai
             };
             _context.VaiTros.Add(vaiTros);
             _context.SaveChanges();
             return new JsonResult(vaiTros)
             {
-                StatusCode = StatusCodes.Status201Created
+                StatusCode = StatusCodes.Status201Created       
             };
         }
 
         public JsonResult Update(int idVaiTro, AddVaiTro addVaiTro)
         {
-            var vaiTro = _context.VaiTros.FirstOrDefault(v => v.MaLoai == idVaiTro);
+            var vaiTro = _context.VaiTros.FirstOrDefault(v => v.MaLoai == idVaiTro);    
             if (vaiTro == null)
             {
                 return new JsonResult("Vai trò không tồn tại")
                 {
                     StatusCode = StatusCodes.Status404NotFound
-                };
+                };  
             }
             vaiTro.TenLoai = addVaiTro.TenLoai;
             _context.SaveChanges();
-            return new JsonResult("Cập nhật vai trò thành công")
+            return new JsonResult(vaiTro)
             {
-                StatusCode = StatusCodes.Status200OK
+                StatusCode = StatusCodes.Status200OK    
             };
         }
-        
+
         public JsonResult Delete(int id)
         {
-            var vaiTro = _context.VaiTros.FirstOrDefault(v => v.MaLoai == id);
+            var vaiTro = _context.VaiTros.FirstOrDefault(v => v.MaLoai == id);  
             if (vaiTro == null)
             {
                 return new JsonResult("Vai trò không tồn tại")
                 {
                     StatusCode = StatusCodes.Status404NotFound
-                };
+                };  
             }
             _context.VaiTros.Remove(vaiTro);
             _context.SaveChanges();
-            return new JsonResult("Xóa vai trò thành công")
+            return new JsonResult("Vai trò đã được xóa")
             {
-                StatusCode = StatusCodes.Status200OK
+                StatusCode = StatusCodes.Status200OK    
             };
         }
-    }    
+    }
 }

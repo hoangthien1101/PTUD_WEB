@@ -28,7 +28,7 @@ namespace MyWebApi.Controllers
             var trangThaiThanhToan = _trangThaiThanhToanRepo.GetById(id);
             return Ok(trangThaiThanhToan);
         }
-        [HttpPost("Add")]
+        [HttpPost("Create")]
         public async Task<IActionResult> AddTT(TrangThaiThanhToanVM trangThaiThanhToanVM)
         {
             var result = await _trangThaiThanhToanRepo.AddTT(trangThaiThanhToanVM);
