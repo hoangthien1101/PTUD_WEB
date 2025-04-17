@@ -28,9 +28,9 @@ namespace MyWebApi.Controller
         }
 
         [HttpPost("Create")]
-        public IActionResult AddSDDV(SuDungDichVuVM suDungDichVuVM)
+        public async Task<IActionResult> AddSDDV(SuDungDichVuVM suDungDichVuVM)
         {
-            return Ok(_suDungDichVuRepo.AddSDDV(suDungDichVuVM));
+            return Ok(await _suDungDichVuRepo.AddSDDV(suDungDichVuVM));
         }
 
         [HttpPut("Update")]

@@ -30,9 +30,9 @@ namespace MyWebApi.Controller
         }
 
         [HttpPost("Create")]
-        public IActionResult AddNV(NhanVienVM nhanVienVM)
+        public async Task<IActionResult> AddNV(NhanVienVM nhanVienVM)
         {
-            var nhanVien = _nhanVienRepo.AddNV(nhanVienVM);
+            var nhanVien = await _nhanVienRepo.AddNV(nhanVienVM);
             return Ok(nhanVien);
         }
 
