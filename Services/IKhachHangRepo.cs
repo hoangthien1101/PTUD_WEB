@@ -50,6 +50,7 @@ namespace MyWebApi.ViewModel
                 TenKH = khachHang.TenKH,
                 Email = khachHang.Email,
                 Phone = khachHang.Phone,
+                MaVaiTro = 3,
                 Xoa = khachHang.Xoa
             };
             return new JsonResult(khachHangVM)
