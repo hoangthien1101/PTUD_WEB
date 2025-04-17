@@ -10,8 +10,5 @@ namespace MyWebApi.Model
         public int MaTT { get; set; }
         public string? TenTT { get; set; }
         public virtual ICollection<DatPhong> DatPhongs { get; set; }
-
-
-
     }
 }

@@ -12,7 +12,7 @@ namespace MyWebApi.Services
         JsonResult GetBySoPhong(string SoPhong);
         Task<JsonResult> Create(AddPhong addPhong, List<IFormFile> files);
         JsonResult Update(string SoPhong, UpdatePhong updatePhong);
-        JsonResult Delete(string SoPhong);
+        JsonResult Delete(int id, DeletePhong deletePhong);
     }
     public class PhongRepo : IPhongRepo
     {
@@ -136,9 +136,9 @@ namespace MyWebApi.Services
             };
         }
 
-        public JsonResult Delete(string SoPhong)
+        public JsonResult Delete(int id, DeletePhong deletePhong)
         {
-            var phong = _context.Phongs.FirstOrDefault(p => p.SoPhong == SoPhong);
+            var phong = _context.Phongs.Find(id);
             if (phong == null)
             {
                 return new JsonResult("Phòng không tồn tại")
@@ -146,7 +146,7 @@ namespace MyWebApi.Services
                     StatusCode = StatusCodes.Status404NotFound
                 };
             }
-            _context.Phongs.Remove(phong);
+            phong.Xoa = deletePhong.Xoa;
             _context.SaveChangesAsync();
             return new JsonResult("Xóa phòng thành công")
             {

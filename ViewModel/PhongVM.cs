@@ -46,5 +46,8 @@ namespace MyWebApi.ViewModel
         public int? MaLoaiPhong { get; set; }
         public int? TrangThai { get; set; }
     }
-
+    public class DeletePhong
+    {
+        public bool? Xoa { get; set; }
+    }
 }

@@ -44,10 +44,10 @@ namespace MyWebApi.Controllers
             return phong;
         }
 
-        [HttpDelete("Delete/{SoPhong}")]
-        public JsonResult Delete(string SoPhong)
+        [HttpPut("Delete/{id}")]
+        public JsonResult Delete(int id, DeletePhong deletePhong)
         {
-            var phong = _phongRepo.Delete(SoPhong);
+            var phong = _phongRepo.Delete(id, deletePhong);
             return phong;
         }
         
