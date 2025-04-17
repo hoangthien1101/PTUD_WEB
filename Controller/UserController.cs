@@ -46,17 +46,32 @@ namespace MyWebApi.Controllers
             var result = await _userRepo.AddUser(uservm);
             return result;
         }
-        
+
         [HttpPost("RegisterUser")]
-        public IActionResult RegisterUser([FromForm]RegisterUser registerUser)
+        public IActionResult RegisterUser([FromForm] RegisterUser registerUser)
         {
             return Ok(_userRepo.RegisterUser(registerUser));
+        }
+
+
+        [HttpPost("reset/{MaTK}")]
+        public IActionResult ResetPassword(int MaTK)
+        {
+            var result = _userRepo.ResetPass(MaTK);
+            return result;
         }
 
         [HttpPut("Update")]
         public IActionResult EditUser(string TenTK, EditUser edituser)
         {
             return Ok(_userRepo.EditUser(TenTK, edituser));
+        }
+
+        [HttpPut("DoiMatKhau/{TenTK}")]
+        public IActionResult DoiMatKhau(string TenTK, DoiMatKhauVM doiMatKhauVM)
+        {
+            var result = _userRepo.DoiMatKhau(TenTK, doiMatKhauVM);
+            return result;
         }
 
         [HttpDelete("Delete")]

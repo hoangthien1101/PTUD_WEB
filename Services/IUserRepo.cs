@@ -5,6 +5,7 @@ using MyWebApi.ViewModel;
 using MyWebApi.Data;
 using webAPI.Data;
 using MyWebApi.Helper;
+using MyWebApi.Service;
 
 namespace MyWebApi.Services
 {
@@ -16,16 +17,21 @@ namespace MyWebApi.Services
         JsonResult EditUser(string TenTK, EditUser edituser);
         JsonResult DeleteUser(string TenTK);
         JsonResult RegisterUser(RegisterUser registerUser);
-
+        JsonResult DoiMatKhau(string TenTK, DoiMatKhauVM doiMatKhauVM);
+        JsonResult ResetPass(int MaTK);
     }
 
     public class UserRepo : IUserRepo
     {
         private readonly AppDbContext _context;
+        private readonly ISendMailService _sendEmail;
+        private readonly IConfiguration _configuration;
 
-        public UserRepo(AppDbContext context)
+        public UserRepo(AppDbContext context, ISendMailService sendEmail, IConfiguration configuration)
         {
             _context = context;
+            _sendEmail = sendEmail;
+            _configuration = configuration;
         }
 
         public List<UserVM> GetAll()
@@ -178,6 +184,71 @@ namespace MyWebApi.Services
             {
                 StatusCode = StatusCodes.Status400BadRequest
             };
+        }
+        public JsonResult DoiMatKhau(string TenTK, DoiMatKhauVM doiMatKhauVM)
+        {
+            var user = _context.TaiKhoans.FirstOrDefault(c => c.TenTK == TenTK);
+            if (user == null)
+            {
+                return new JsonResult("Tài khoản không tồn tại")
+                {
+                    StatusCode = StatusCodes.Status404NotFound
+                };
+            }
+            if (PasswordHasher.verifyPassword(doiMatKhauVM.MatKhauCu, user.MatKhau))
+            {
+                if (doiMatKhauVM.MatKhauMoi == doiMatKhauVM.ReMatKhau)
+                {
+                    user.MatKhau = PasswordHasher.HashPassword(doiMatKhauVM.MatKhauMoi);
+                    _context.SaveChanges();
+                    return new JsonResult("Đổi mật khẩu thành công")
+                    {
+                        StatusCode = StatusCodes.Status200OK
+                    };
+                }
+                else
+                {
+                    return new JsonResult("Mật khẩu không khớp")
+                    {
+                        StatusCode = StatusCodes.Status400BadRequest
+                    };
+                }
+            }
+            return new JsonResult("Mật khẩu cũ không đúng")
+            {
+                StatusCode = StatusCodes.Status400BadRequest
+            };
+        }
+        public JsonResult ResetPass(int MaTK)
+        {
+            var check = _context.TaiKhoans.FirstOrDefault(u => u.MaTK == MaTK);
+            if (check == null)
+            {
+                return new JsonResult("User không tồn tại")
+                {
+                    StatusCode = StatusCodes.Status404NotFound
+                };
+            }
+            else
+            {
+                string password = PasswordHasher.GetRandomPassword();
+                check.MatKhau = PasswordHasher.HashPassword(password);
+                _context.SaveChanges();
+                var email = new EmailModel
+                {
+                    FromEmail = _configuration["Gmail:Username"],
+                    ToEmail = check.Email,
+                    Subject = "Quản trị viên đã reset mật khẩu của bạn",
+                    Body = "Thông tin đăng nhập: " +
+                    "- Username: " + check.TenTK + "" +
+                    "- Mật khẩu: " + password,
+                };
+                _sendEmail.SendEmail(email);
+                return new JsonResult("Đã Reset")
+                {
+                    StatusCode = StatusCodes.Status200OK
+                };
+            }
         }
     }
 }

@@ -23,7 +23,6 @@ namespace MyWebApi.ViewModel
 
     public class AddUser
     {
-        public int MaTK { get; set; }
         public string? TenTK { get; set; }
         public string? MatKhau { get; set; }
         public string? TenHienThi { get; set; }
@@ -48,5 +47,12 @@ namespace MyWebApi.ViewModel
         public string? Email { get; set; }
         public string? Phone { get; set; }
         public DateTime CreateAt { get; set; }
+    }
+
+    public class DoiMatKhauVM
+    {
+        public string MatKhauCu { get; set; }
+        public string MatKhauMoi { get; set; }
+        public string ReMatKhau { get; set; }
     }
 }
