@@ -1,10 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using MyWebApi.Model;
 using MyWebApi.ViewModel;
-using MyWebApi.Data;
 using webAPI.Data;
-using MyWebApi.Helper;
 
 namespace MyWebApi.Services
 {
