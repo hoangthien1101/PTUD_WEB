@@ -50,11 +50,28 @@ builder.Services.AddScoped<ITrangThaiThanhToanRepo, TrangThaiThanhToanRepo>();
 builder.Services.AddScoped<IPhongRepo, PhongRepo>();
 builder.Services.AddScoped<ILoaiPhongRepo, LoaiPhongRepo>();
 builder.Services.AddScoped<ITrangThaiPhongRepo, TrangThaiPhongRepo>();
+builder.Services.AddScoped<INhanVienRepo, NhanVienRepo>();
+builder.Services.AddScoped<ISuDungDichVuRepo, SuDungDichVuRepo>();
+builder.Services.AddScoped<IHinhAnhPhongService, HinhAnhPhongService>();
+builder.Services.AddScoped<IWriteFileRepository, WriteFileRepository>();
+builder.Services.AddScoped<ITrangThaiDatPhongRepo, TrangThaiDatPhongRepo>();
+builder.Services.AddScoped<IKhachHangRepo, KhachHangRepo>();
+builder.Services.AddScoped<IDatPhongRepo, DatPhongRepo>();
+builder.Services.AddScoped<ISendMailService, SendEmailService>();
+builder.Services.AddScoped<IForgotPasswordService, ForgotPasswordService>();
+builder.Services.AddScoped<IPhuongThucThanhToanRepo, PhuongThucThanhToanRepo>();
+builder.Services.AddScoped<IGiamGiaRepo, GiamGiaRepo>();
+builder.Services.AddScoped<IDichVuRepo, DichVuRepo>();
+builder.Services.AddScoped<IHoaDonRepo, HoaDonRepo>();
+builder.Services.AddScoped<IChucVuRepo, ChucVuRepo>();
+builder.Services.AddScoped<ICaLamRepo, CaLamRepo>();
+builder.Services.AddScoped<IChiTietHoaDonDVRepo, ChiTietHoaDonDVRepo>();
+
 //Connection String Config
 builder.Services.AddDbContext<AppDbContext>(options =>
      options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-     builder.Services.AddAuthentication(opt =>
+builder.Services.AddAuthentication(opt =>
 {
     opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
