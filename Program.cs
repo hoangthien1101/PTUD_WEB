@@ -1,23 +1,24 @@
 using Microsoft.EntityFrameworkCore;
-using webAPI.Data;
-using MyWebApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using Microsoft.OpenApi.Models;
-using MyWebApi.ViewModel;
+using System.Text;
+using webAPI.Data;
+using MyWebApi.Services;
 using MyWebApi.Service;
+using MyWebApi.ViewModel;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Cho phép đọc từ biến môi trường khi deploy trên Render
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 
+// Add services
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(setup =>
 {
-    // Include 'SecurityScheme' to use JWT Authentication
     var jwtSecurityScheme = new OpenApiSecurityScheme
     {
         BearerFormat = "JWT",
@@ -25,7 +26,7 @@ builder.Services.AddSwaggerGen(setup =>
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.Http,
         Scheme = JwtBearerDefaults.AuthenticationScheme,
-        Description = "Nhập Token vào ",
+        Description = "Nhập JWT token vào đây",
 
         Reference = new OpenApiReference
         {
@@ -35,14 +36,13 @@ builder.Services.AddSwaggerGen(setup =>
     };
 
     setup.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
-
     setup.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         { jwtSecurityScheme, Array.Empty<string>() }
     });
 });
 
-// Register services
+// Register các service phụ thuộc
 builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddScoped<ILoginRepo, LoginRepo>();
 builder.Services.AddScoped<IVaiTroRepo, VaiTroRepo>();
@@ -67,39 +67,39 @@ builder.Services.AddScoped<IChucVuRepo, ChucVuRepo>();
 builder.Services.AddScoped<ICaLamRepo, CaLamRepo>();
 builder.Services.AddScoped<IChiTietHoaDonDVRepo, ChiTietHoaDonDVRepo>();
 
-//Connection String Config
+// Cấu hình kết nối database
 builder.Services.AddDbContext<AppDbContext>(options =>
-     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Cấu hình JWT
 builder.Services.AddAuthentication(opt =>
 {
     opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
     opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
+})
+.AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuerSigningKey = true, // xác minh chữ ký xác thực token có hợp lệ không
-        ValidateAudience = false, // xác minh địa chỉ nhận
-        ValidateIssuer = false, // xác minh địa chỉ gửi
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                builder.Configuration.GetSection("Jwt:SecretKey").Value!)) // khóa xác thực
+        ValidateIssuerSigningKey = true,
+        ValidateAudience = false,
+        ValidateIssuer = false,
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"]!))
     };
 });
-// var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
-// builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// Luôn bật Swagger nếu được cấu hình hoặc môi trường là Development
+if (builder.Configuration.GetValue<bool>("EnableSwagger") || app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-//app.UseHttpsRedirection();
+app.UseHttpsRedirection(); 
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -107,5 +107,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
-
