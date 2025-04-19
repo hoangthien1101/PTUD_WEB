@@ -1,34 +1,6 @@
 services:
   - type: web
     name: my-aspnetcore-api
-    env: dotnet
-    buildCommand: dotnet publish MyWebApi.csproj -c Release -o out
-    startCommand: dotnet out/MyWebApi.dll
+    env: docker
     plan: free
-    envVars:
-      - key: ASPNETCORE_ENVIRONMENT
-        value: Production
-
-      # ✅ Chuỗi kết nối SQL Server
-      - key: ConnectionStrings__DefaultConnection
-        value: Server=118.69.126.49;Database=data_QLKS_113_Nhom5;User Id=user_113_nhom5;Password=123456789;TrustServerCertificate=True;Encrypt=True;
-
-      # ✅ Khóa bí mật dùng cho JWT
-      - key: Jwt__SecretKey
-        value: fBgm@_3lhh%N6VR;B&%[[%g9d$muL_7z
-
-      # ✅ Gmail cấu hình gửi mail
-      - key: Gmail__Host
-        value: smtp.gmail.com
-      - key: Gmail__Port
-        value: 587
-      - key: Gmail__Username
-        value: hoangthien110104@gmail.com
-      - key: Gmail__Password
-        value: adfz gvtm ictf pwgs
-      - key: Gmail__SMTP__starttls__enable
-        value: true
-
-      # ✅ Swagger
-      - key: EnableSwagger
-        value: true
+    branch: deploy # hoặc main nếu bạn không dùng nhánh deploy
