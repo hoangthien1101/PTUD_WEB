@@ -3,12 +3,13 @@ using webAPI.Data;
 using MyWebApi.ViewModel;
 using MyWebApi.Model;
 using MyWebApi.Service;
+using Microsoft.EntityFrameworkCore;
 
 namespace MyWebApi.Services
 {
     public interface IPhongRepo
     {
-        List<PhongMD> GetAll();
+        List<PhongMD> GetAll([FromQuery] PaginationParams paginationParams = null);
         JsonResult GetBySoPhong(string SoPhong);
         Task<JsonResult> Create(AddPhong addPhong, List<IFormFile> files);
         JsonResult Update(string SoPhong, UpdatePhong updatePhong);
@@ -27,9 +28,21 @@ namespace MyWebApi.Services
             _hinhAnhPhong = hinhAnhPhong;
         }
 
-        public List<PhongMD> GetAll()
+        public List<PhongMD> GetAll([FromQuery] PaginationParams paginationParams = null)
         {
-            var phong = _context.Phongs.Select(p => new PhongMD
+            var query = _context.Phongs
+                .Include(p => p.LoaiPhong)
+                .Include(p => p.TrangThaiPhong)
+                .AsQueryable();
+
+            if (paginationParams != null)
+            {
+                query = query
+                    .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+                    .Take(paginationParams.PageSize);
+            }
+
+            var phong = query.Select(p => new PhongMD
             {
                 MaPhong = p.MaPhong,
                 SoPhong = p.SoPhong,
@@ -39,7 +52,12 @@ namespace MyWebApi.Services
                 Xoa = p.Xoa,
                 MaLoaiPhong = p.MaLoaiPhong,
                 TrangThai = p.TrangThai,
+                LoaiPhong = p.LoaiPhong,
+                TrangThaiPhong = p.TrangThaiPhong,
+                TenLoaiPhong = p.LoaiPhong.TenLoai,
+                TenTT = p.TrangThaiPhong.TenTT
             }).ToList();
+
             return phong;
         }
 
@@ -153,6 +171,5 @@ namespace MyWebApi.Services
                 StatusCode = StatusCodes.Status200OK
             };
         }   
-
     }
 }

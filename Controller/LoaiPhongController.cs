@@ -16,38 +16,35 @@ namespace MyWebApi.Controllers
             _loaiPhongRepo = loaiPhongRepo;
         }
         [HttpGet("GetAll")]
-        public IActionResult GetAll()
+        public IActionResult GetAll([FromQuery] PaginationParams paginationParams)
         {
-            var loaiPhong = _loaiPhongRepo.GetAll();
+            var loaiPhong = _loaiPhongRepo.GetAll(paginationParams);
             return Ok(loaiPhong);
         }
 
-        [HttpGet("GetById/{id}")]
-        public IActionResult GetById(int id)
+        [HttpGet("GetByMaLoai/{MaLoai}")]
+        public IActionResult GetByMaLoai(int MaLoai)
         {
-            var loaiPhong = _loaiPhongRepo.GetById(id);
+            var loaiPhong = _loaiPhongRepo.GetByMaLoai(MaLoai);
             return Ok(loaiPhong);
         }
 
         [HttpPost("Create")]
-        public async Task<JsonResult>Create([FromForm]AddLoaiPhong addLoaiPhong)
+        public JsonResult Create([FromForm] AddLoaiPhong addLoaiPhong)
         {
-            var loaiPhong = await _loaiPhongRepo.Create(addLoaiPhong);
-            return loaiPhong;
+            return _loaiPhongRepo.Create(addLoaiPhong);
         }
 
-        [HttpPut("Update/{id}")]
-        public JsonResult Update(int id, [FromForm]UpdateLoaiPhong updateLoaiPhong)
+        [HttpPut("Update/{MaLoai}")]
+        public JsonResult Update(int MaLoai, [FromForm] UpdateLoaiPhong updateLoaiPhong)
         {
-            var loaiPhong = _loaiPhongRepo.Update(id, updateLoaiPhong);
-            return loaiPhong;
+            return _loaiPhongRepo.Update(MaLoai, updateLoaiPhong);
         }
 
         [HttpDelete("Delete/{id}")]
         public JsonResult Delete(int id)
         {
-            var loaiPhong = _loaiPhongRepo.Delete(id);
-            return loaiPhong;
+            return _loaiPhongRepo.Delete(id);
         }
     }
 }

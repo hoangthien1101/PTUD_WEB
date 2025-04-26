@@ -6,10 +6,10 @@ namespace MyWebApi.Services
 {
     public interface ILoaiPhongRepo
     {
-        List<LoaiPhongMD> GetAll();
-        JsonResult GetById(int id);
-        Task<JsonResult> Create(AddLoaiPhong addLoaiPhong);
-        JsonResult Update(int id, UpdateLoaiPhong updateLoaiPhong);
+        List<LoaiPhongMD> GetAll([FromQuery] PaginationParams paginationParams = null);
+        JsonResult GetByMaLoai(int MaLoai);
+        JsonResult Create(AddLoaiPhong addLoaiPhong);
+        JsonResult Update(int MaLoai, UpdateLoaiPhong updateLoaiPhong);
         JsonResult Delete(int id);
     }
 
@@ -21,9 +21,18 @@ namespace MyWebApi.Services
         {
             _context = context;
         }
-        public List<LoaiPhongMD> GetAll()
+        public List<LoaiPhongMD> GetAll([FromQuery] PaginationParams paginationParams = null)
         {
-            return _context.LoaiPhongs.Select(lp => new LoaiPhongMD
+            var query = _context.LoaiPhongs.AsQueryable();
+
+            if (paginationParams != null)
+            {
+                query = query
+                    .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+                    .Take(paginationParams.PageSize);
+            }
+
+            return query.Select(lp => new LoaiPhongMD
             {
                 MaLoai = lp.MaLoai,
                 TenLoai = lp.TenLoai,
@@ -31,9 +40,9 @@ namespace MyWebApi.Services
             }).ToList();
         }
 
-        public JsonResult GetById(int id)
+        public JsonResult GetByMaLoai(int MaLoai)
         {
-            var loaiPhong = _context.LoaiPhongs.Find(id);
+            var loaiPhong = _context.LoaiPhongs.Find(MaLoai);
             if (loaiPhong == null)
             {
                 return new JsonResult("Loại phòng không tồn tại")
@@ -41,43 +50,43 @@ namespace MyWebApi.Services
                     StatusCode = StatusCodes.Status404NotFound
                 };
             }
-            var loaiPhongVM = new LoaiPhongVM
+            var loaiPhongMD = new LoaiPhongMD
             {
                 TenLoai = loaiPhong.TenLoai,
                 GiaPhong = loaiPhong.GiaPhong
             };
-            return new JsonResult(loaiPhongVM)
+            return new JsonResult(loaiPhongMD)
             {
                 StatusCode = StatusCodes.Status200OK
             };
         }
 
-        public async Task<JsonResult> Create(AddLoaiPhong addLoaiPhong)
+        public JsonResult Create(AddLoaiPhong addLoaiPhong)
         {
             var check = _context.LoaiPhongs.FirstOrDefault(lp => lp.TenLoai == addLoaiPhong.TenLoai);
-            if (check != null)
+            if (check == null)
             {
-                return new JsonResult("Loại phòng đã tồn tại")
+                var loaiPhong = new LoaiPhong
                 {
-                    StatusCode = StatusCodes.Status400BadRequest
+                    TenLoai = addLoaiPhong.TenLoai,
+                    GiaPhong = addLoaiPhong.GiaPhong
+                };
+                _context.LoaiPhongs.Add(loaiPhong);
+                _context.SaveChanges();
+                return new JsonResult("Thêm loại phòng thành công")
+                {
+                    StatusCode = StatusCodes.Status201Created
                 };
             }
-            var loaiPhong = new LoaiPhong
+            return new JsonResult("Loại phòng đã tồn tại")
             {
-                TenLoai = addLoaiPhong.TenLoai,
-                GiaPhong = addLoaiPhong.GiaPhong
-            };
-            _context.LoaiPhongs.Add(loaiPhong);
-            _context.SaveChanges();
-            return new JsonResult("Loại phòng đã được tạo thành công")
-            {
-                StatusCode = StatusCodes.Status200OK
+                StatusCode = StatusCodes.Status400BadRequest
             };
         }   
 
-        public JsonResult Update(int id, UpdateLoaiPhong updateLoaiPhong)
+        public JsonResult Update(int MaLoai, UpdateLoaiPhong updateLoaiPhong)
         {
-            var loaiPhong = _context.LoaiPhongs.Find(id);
+            var loaiPhong = _context.LoaiPhongs.Find(MaLoai);
             if (loaiPhong == null)
             {   
                 return new JsonResult("Loại phòng không tồn tại")

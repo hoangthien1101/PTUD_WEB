@@ -16,39 +16,35 @@ namespace MyWebApi.Controllers
         }
 
         [HttpGet("GetAll")]
-        public IActionResult GetAll()
+        public IActionResult GetAll([FromQuery] PaginationParams paginationParams)
         {
-            var trangThaiPhong = _trangThaiPhongRepo.GetAll();
+            var trangThaiPhong = _trangThaiPhongRepo.GetAll(paginationParams);
             return Ok(trangThaiPhong);
         }
 
-        [HttpGet("GetById/{id}")]
-        public IActionResult GetById(int id)
+        [HttpGet("GetByMaTT/{MaTT}")]
+        public IActionResult GetByMaTT(int MaTT)
         {
-            var trangThaiPhong = _trangThaiPhongRepo.GetById(id);
+            var trangThaiPhong = _trangThaiPhongRepo.GetByMaTT(MaTT);
             return Ok(trangThaiPhong);
         }
 
         [HttpPost("Create")]
-        public async Task<JsonResult> Create([FromForm]AddTrangThaiPhong addTrangThaiPhong)
+        public JsonResult Create([FromForm] AddTrangThaiPhong addTrangThaiPhong)
         {
-            var trangThaiPhong = await _trangThaiPhongRepo.Create(addTrangThaiPhong);
-            return trangThaiPhong;
+            return _trangThaiPhongRepo.Create(addTrangThaiPhong);
         }
         
         [HttpPut("Update/{id}")]
-        public JsonResult Update(int id, [FromForm]UpdateTrangThaiPhong updateTrangThaiPhong)
+        public JsonResult Update(int id, [FromForm] UpdateTrangThaiPhong updateTrangThaiPhong)
         {
-            var trangThaiPhong = _trangThaiPhongRepo.Update(id, updateTrangThaiPhong);
-            return trangThaiPhong;
+            return _trangThaiPhongRepo.Update(id, updateTrangThaiPhong);
         }
 
         [HttpDelete("Delete/{id}")]
         public JsonResult Delete(int id)
         {
-            var trangThaiPhong = _trangThaiPhongRepo.Delete(id);
-            return trangThaiPhong;
+            return _trangThaiPhongRepo.Delete(id);
         }
-        
     }
 }

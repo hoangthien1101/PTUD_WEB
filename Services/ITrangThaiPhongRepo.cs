@@ -7,9 +7,9 @@ namespace MyWebApi.Services
 {
     public interface ITrangThaiPhongRepo
     {
-        List<TrangThaiPhongMD> GetAll();
-        JsonResult GetById(int id);
-        Task<JsonResult> Create(AddTrangThaiPhong addTrangThaiPhong);
+        List<TrangThaiPhongMD> GetAll(PaginationParams paginationParams);
+        JsonResult GetByMaTT(int MaTT);
+        JsonResult Create(AddTrangThaiPhong addTrangThaiPhong);
         JsonResult Update(int id, UpdateTrangThaiPhong updateTrangThaiPhong);
         JsonResult Delete(int id);
     }
@@ -21,18 +21,26 @@ namespace MyWebApi.Services
         {
             _context = context;
         }
-        public List<TrangThaiPhongMD> GetAll()
+        public List<TrangThaiPhongMD> GetAll(PaginationParams paginationParams)
         {
-            var trangThaiPhong = _context.TrangThaiPhongs.Select(tt => new TrangThaiPhongMD
+            var query = _context.TrangThaiPhongs.AsQueryable();
+
+            if (paginationParams != null)
+            {
+                query = query
+                    .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+                    .Take(paginationParams.PageSize);
+            }
+
+            return query.Select(tt => new TrangThaiPhongMD
             {
                 MaTT = tt.MaTT,
                 TenTT = tt.TenTT
             }).ToList();
-            return trangThaiPhong;
         }
-        public JsonResult GetById(int id)
+        public JsonResult GetByMaTT(int MaTT)
         {
-            var trangThaiPhong = _context.TrangThaiPhongs.FirstOrDefault(tt => tt.MaTT == id);
+            var trangThaiPhong = _context.TrangThaiPhongs.FirstOrDefault(tt => tt.MaTT == MaTT);
             if (trangThaiPhong == null)
             {
                 return new JsonResult("Trạng thái phòng không tồn tại")
@@ -49,7 +57,7 @@ namespace MyWebApi.Services
                 StatusCode = StatusCodes.Status200OK
             };
         }
-        public async Task<JsonResult> Create(AddTrangThaiPhong addTrangThaiPhong)
+        public JsonResult Create(AddTrangThaiPhong addTrangThaiPhong)
         {
             var check = _context.TrangThaiPhongs.FirstOrDefault(tt => tt.TenTT == addTrangThaiPhong.TenTT);
             if (check != null)
@@ -64,7 +72,7 @@ namespace MyWebApi.Services
                 TenTT = addTrangThaiPhong.TenTT
             };
             _context.TrangThaiPhongs.Add(trangThaiPhong);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
             return new JsonResult("Trạng thái phòng đã được tạo thành công")
             {
                 StatusCode = StatusCodes.Status200OK
@@ -86,7 +94,7 @@ namespace MyWebApi.Services
             {
                 StatusCode = StatusCodes.Status200OK
             };  
-            }
+        }
         public JsonResult Delete(int id)
         {
             var trangThaiPhong = _context.TrangThaiPhongs.FirstOrDefault(tt => tt.MaTT == id);

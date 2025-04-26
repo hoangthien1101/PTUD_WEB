@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using MyWebApi.Services;
 using MyWebApi.ViewModel;
+using webAPI.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace MyWebApi.Controllers
 {
@@ -10,17 +12,19 @@ namespace MyWebApi.Controllers
     public class PhongController : ControllerBase
     {
         private readonly IPhongRepo _phongRepo;
+        private readonly AppDbContext _context;
 
-        public PhongController(IPhongRepo phongRepo)
+        public PhongController(IPhongRepo phongRepo, AppDbContext context)
         {
             _phongRepo = phongRepo;
+            _context = context;
         }
 
         [HttpGet("GetAll")]
-        public IActionResult GetAll()
+        public IActionResult GetAll([FromQuery] PaginationParams paginationParams)
         {
-            var phong = _phongRepo.GetAll();
-            return Ok(phong);
+            var result = _phongRepo.GetAll(paginationParams);
+            return Ok(result);
         }
 
         [HttpGet("GetBySoPhong/{SoPhong}")]
