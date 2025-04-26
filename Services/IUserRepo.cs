@@ -156,7 +156,6 @@ namespace MyWebApi.Services
                 {
                     var newUser = new TaiKhoan
                     {
-                        MaTK = registerUser.MaTK,
                         TenTK = registerUser.TenTK,
                         MatKhau = PasswordHasher.HashPassword(registerUser.MatKhau),
                         TenHienThi = registerUser.TenHienThi,
