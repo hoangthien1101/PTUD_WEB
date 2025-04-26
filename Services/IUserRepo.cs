@@ -163,7 +163,7 @@ namespace MyWebApi.Services
                         Email = registerUser.Email,
                         Phone = registerUser.Phone,
                         CreateAt = DateTime.Now,
-                        LoaiTK = 2,
+                        LoaiTK = 3,
                     };
                     _context.TaiKhoans.Add(newUser);
                     _context.SaveChanges();
