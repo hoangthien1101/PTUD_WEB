@@ -7,10 +7,13 @@ RUN dotnet restore
 
 COPY . ./
 RUN dotnet publish MyWebApi.csproj -c Release -o out
+
 # Stage 2: Run
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 COPY --from=build /app/out ./
-ENV ASPNETCORE_URLS=http://+:8080
-EXPOSE 8080
+
+# Đừng hardcode 8080 nữa, đọc từ $PORT
+ENV ASPNETCORE_URLS=http://+:${PORT}
+EXPOSE ${PORT}
 ENTRYPOINT ["dotnet", "MyWebApi.dll"]
