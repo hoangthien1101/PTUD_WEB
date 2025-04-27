@@ -9,7 +9,7 @@ namespace MyWebApi.Services
 {
     public interface IPhongRepo
     {
-        List<PhongMD> GetAll([FromQuery] PaginationParams paginationParams = null);
+        PaginationModel<PhongMD> GetAll(PaginationParams paginationParams);
         JsonResult GetBySoPhong(string SoPhong);
         Task<JsonResult> Create(AddPhong addPhong, List<IFormFile> files);
         JsonResult Update(string SoPhong, UpdatePhong updatePhong);
@@ -28,38 +28,43 @@ namespace MyWebApi.Services
             _hinhAnhPhong = hinhAnhPhong;
         }
 
-        public List<PhongMD> GetAll([FromQuery] PaginationParams paginationParams = null)
+        public PaginationModel<PhongMD> GetAll(PaginationParams paginationParams)
         {
             var query = _context.Phongs
                 .Include(p => p.LoaiPhong)
                 .Include(p => p.TrangThaiPhong)
                 .AsQueryable();
 
-            if (paginationParams != null)
-            {
-                query = query
-                    .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
-                    .Take(paginationParams.PageSize);
-            }
+            int totalItems = query.Count();  // Đếm tổng số dòng trước
 
-            var phong = query.Select(p => new PhongMD
-            {
-                MaPhong = p.MaPhong,
-                SoPhong = p.SoPhong,
-                SoNguoi = p.SoNguoi,
-                HinhAnh = p.HinhAnh,
-                MoTa = p.MoTa,
-                Xoa = p.Xoa,
-                MaLoaiPhong = p.MaLoaiPhong,
-                TrangThai = p.TrangThai,
-                LoaiPhong = p.LoaiPhong,
-                TrangThaiPhong = p.TrangThaiPhong,
-                TenLoaiPhong = p.LoaiPhong.TenLoai,
-                TenTT = p.TrangThaiPhong.TenTT
-            }).ToList();
+            var items = query
+                .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+                .Take(paginationParams.PageSize)
+                .Select(p => new PhongMD
+                {
+                    MaPhong = p.MaPhong,
+                    SoPhong = p.SoPhong,
+                    SoNguoi = p.SoNguoi,
+                    HinhAnh = p.HinhAnh,
+                    MoTa = p.MoTa,
+                    Xoa = p.Xoa,
+                    MaLoaiPhong = p.MaLoaiPhong,
+                    TrangThai = p.TrangThai,
+                    LoaiPhong = p.LoaiPhong,
+                    TrangThaiPhong = p.TrangThaiPhong,
+                    TenLoaiPhong = p.LoaiPhong.TenLoai,
+                    TenTT = p.TrangThaiPhong.TenTT
+                }).ToList();
 
-            return phong;
+            return new PaginationModel<PhongMD>
+            {
+                Items = items,
+                TotalItems = totalItems,
+                PageNumber = paginationParams.PageNumber,
+                PageSize = paginationParams.PageSize
+            };
         }
+
 
         public JsonResult GetBySoPhong(string SoPhong)
         {
@@ -70,7 +75,7 @@ namespace MyWebApi.Services
                 {
                     StatusCode = StatusCodes.Status404NotFound
                 };
-            }   
+            }
             var phongVM = new PhongVM
             {
                 SoPhong = phong.SoPhong,
@@ -79,7 +84,7 @@ namespace MyWebApi.Services
                 MoTa = phong.MoTa,
                 MaLoaiPhong = phong.MaLoaiPhong,
                 TrangThai = phong.TrangThai,
-            };  
+            };
             return new JsonResult(phongVM)
             {
                 StatusCode = StatusCodes.Status200OK
@@ -140,7 +145,7 @@ namespace MyWebApi.Services
                 {
                     StatusCode = StatusCodes.Status404NotFound
                 };
-            }   
+            }
             phong.SoPhong = updatePhong.SoPhong;
             phong.SoNguoi = updatePhong.SoNguoi;
             phong.HinhAnh = updatePhong.HinhAnh;
@@ -170,6 +175,6 @@ namespace MyWebApi.Services
             {
                 StatusCode = StatusCodes.Status200OK
             };
-        }   
+        }
     }
 }

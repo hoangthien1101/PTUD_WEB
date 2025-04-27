@@ -16,9 +16,9 @@ namespace MyWebApi.Controller
         }
 
         [HttpGet("GetAll")]
-        public IActionResult GetAll()
+        public IActionResult GetAll([FromQuery] PaginationParams paginationParams)
         {
-            return Ok(_chucVuRepo.GetAll());
+            return Ok(_chucVuRepo.GetAll(paginationParams));
         }
 
         [HttpGet("GetById")]

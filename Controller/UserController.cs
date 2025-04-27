@@ -20,9 +20,9 @@ namespace MyWebApi.Controllers
         }
 
         [HttpGet("GetAll")]
-        public IActionResult GetAll()
+        public IActionResult GetAll([FromQuery] PaginationParams paginationParams)
         {
-            var users = _userRepo.GetAll();
+            var users = _userRepo.GetAll(paginationParams);
             return Ok(users);
         }
 

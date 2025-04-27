@@ -16,9 +16,9 @@ namespace MyWebApi.Controllers
         }
 
         [HttpGet("GetAll")]
-        public IActionResult GetAll()
+        public IActionResult GetAll([FromQuery] PaginationParams paginationParams)
         {
-            var datPhongs = _datPhongRepo.GetAll();
+            var datPhongs = _datPhongRepo.GetAll(paginationParams);
             return Ok(datPhongs);
         }   
 

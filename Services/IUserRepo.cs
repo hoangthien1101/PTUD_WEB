@@ -11,7 +11,7 @@ namespace MyWebApi.Services
 {
     public interface IUserRepo
     {
-        List<UserVM> GetAll();
+        PaginationModel<UserVM> GetAll(PaginationParams paginationParams);
         Task<JsonResult> AddUser(AddUser uservm);
         LoginVM CheckUser(string check);
         JsonResult EditUser(string TenTK, EditUser edituser);
@@ -34,9 +34,17 @@ namespace MyWebApi.Services
             _configuration = configuration;
         }
 
-        public List<UserVM> GetAll()
+        public PaginationModel<UserVM> GetAll(PaginationParams paginationParams)
         {
-            var users = _context.TaiKhoans.Select(u => new UserVM
+            var query = _context.TaiKhoans.AsQueryable();
+            int totalItems = query.Count();
+            if (paginationParams != null)
+            {
+                query = query
+                    .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+                    .Take(paginationParams.PageSize);
+            }
+            var users = query.Select(u => new UserVM
             {
                 MaTK = u.MaTK,
                 TenTK = u.TenTK,
@@ -49,7 +57,13 @@ namespace MyWebApi.Services
                 Xoa = u.Xoa,
                 LoaiTK = u.VaiTro.MaLoai
             }).ToList();
-            return users;
+            return new PaginationModel<UserVM>
+            {
+                Items = users,
+                TotalItems = totalItems,
+                PageNumber = paginationParams.PageNumber,
+                PageSize = paginationParams.PageSize
+            };
         }
         public LoginVM CheckUser(string? check = null)
         {

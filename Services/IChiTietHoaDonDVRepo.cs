@@ -9,7 +9,7 @@ namespace MyWebApi.Services
     {
         Task<JsonResult> AddCTHDDV(ChiTietHoaDonDVVM chiTietHoaDonDVVM);
         JsonResult Delete(int id);
-        List<ChiTietHoaDonDVMD> GetAll();
+        PaginationModel<ChiTietHoaDonDVMD> GetAll(PaginationParams paginationParams);
         JsonResult GetById(int id);
         JsonResult Update(int id, ChiTietHoaDonDVVM chiTietHoaDonDVVM);
     }
@@ -20,9 +20,17 @@ namespace MyWebApi.Services
         {
             _context = context; 
         }
-        public List<ChiTietHoaDonDVMD> GetAll()
+        public PaginationModel<ChiTietHoaDonDVMD> GetAll(PaginationParams paginationParams)
         {
-            var cthds = _context.ChiTietHoaDonDVs.Select(c => new ChiTietHoaDonDVMD
+            var query = _context.ChiTietHoaDonDVs.AsQueryable();
+            int totalItems = query.Count();
+            if (paginationParams != null)
+            {
+                query = query
+                    .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+                    .Take(paginationParams.PageSize);
+            }
+            var cthds = query.Select(c => new ChiTietHoaDonDVMD
             {
                 MaChiTiet = c.MaChiTiet,
                 MaHD = c.MaHD,
@@ -31,7 +39,13 @@ namespace MyWebApi.Services
                 DonGia = c.DonGia,
                 ThanhTien = c.ThanhTien
             }).ToList();    
-            return cthds;
+            return new PaginationModel<ChiTietHoaDonDVMD>
+            {
+                Items = cthds,
+                TotalItems = totalItems,
+                PageNumber = paginationParams.PageNumber,
+                PageSize = paginationParams.PageSize
+            };
         }
         public JsonResult GetById(int id)
         {

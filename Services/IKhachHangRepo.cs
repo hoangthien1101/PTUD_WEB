@@ -6,7 +6,7 @@ namespace MyWebApi.ViewModel
 {
     public interface IKhachHangRepo
     {
-        List<KhachHangMD> GetAll();
+        PaginationModel<KhachHangMD> GetAll(PaginationParams paginationParams);
         JsonResult GetById(int id);
         JsonResult Create(AddKhachHangVM khachHang);
         JsonResult Update(int id, UpdateKhachHang khachHang);
@@ -22,9 +22,17 @@ namespace MyWebApi.ViewModel
             _context = context;
         }
 
-        public List<KhachHangMD> GetAll()
+        public PaginationModel<KhachHangMD> GetAll(PaginationParams paginationParams)
         {
-            var khachHangs = _context.KhachHangs.Select(kh => new KhachHangMD
+            var query = _context.KhachHangs.AsQueryable();
+            int totalItems = query.Count();
+            if (paginationParams != null)
+            {
+                query = query
+                    .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+                    .Take(paginationParams.PageSize);
+            }
+            var khachHangs = query.Select(kh => new KhachHangMD
             {
                 MaKH = kh.MaKH,
                 TenKH = kh.TenKH,
@@ -32,7 +40,13 @@ namespace MyWebApi.ViewModel
                 Phone = kh.Phone,
                 Xoa = kh.Xoa
             }).ToList();
-            return khachHangs;
+            return new PaginationModel<KhachHangMD>
+            {
+                Items = khachHangs,
+                TotalItems = totalItems,
+                PageNumber = paginationParams.PageNumber,
+                PageSize = paginationParams.PageSize
+            };
         }
 
         public JsonResult GetById(int id)

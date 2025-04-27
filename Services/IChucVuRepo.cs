@@ -10,7 +10,7 @@ namespace MyWebApi.Services
     {
         Task<JsonResult> AddCV(ChucVuVM chucVuVM);
         JsonResult Delete(int id);
-        List<ChucVuMD> GetAll();
+        PaginationModel<ChucVuMD> GetAll(PaginationParams paginationParams);
         JsonResult GetById(int id);
         JsonResult Update(int id, ChucVuVM chucVuVM);
     }
@@ -23,14 +23,28 @@ namespace MyWebApi.Services
             _context = context;
         }
 
-        public List<ChucVuMD> GetAll()
+        public PaginationModel<ChucVuMD> GetAll(PaginationParams paginationParams)
         {
-            var chucVus = _context.ChucVus.Select(c => new ChucVuMD
+            var query = _context.ChucVus.AsQueryable();
+            int totalItems = query.Count();
+            if (paginationParams != null)
+            {
+                query = query
+                    .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+                    .Take(paginationParams.PageSize);
+            }
+            var chucVus = query.Select(c => new ChucVuMD
             {
                 Id = c.Id,
                 TenChucVu = c.TenChucVu 
             }).ToList();
-            return chucVus;
+            return new PaginationModel<ChucVuMD>
+            {
+                Items = chucVus,
+                TotalItems = totalItems,
+                PageNumber = paginationParams.PageNumber,
+                PageSize = paginationParams.PageSize
+            };
         }
 
         public JsonResult GetById(int id)
