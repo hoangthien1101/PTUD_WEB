@@ -7,7 +7,7 @@ namespace MyWebApi.Services
 {
     public interface ITrangThaiPhongRepo
     {
-        List<TrangThaiPhongMD> GetAll(PaginationParams paginationParams);
+        PaginationModel<TrangThaiPhongMD> GetAll(PaginationParams paginationParams);
         JsonResult GetByMaTT(int MaTT);
         JsonResult Create(AddTrangThaiPhong addTrangThaiPhong);
         JsonResult Update(int id, UpdateTrangThaiPhong updateTrangThaiPhong);
@@ -21,9 +21,11 @@ namespace MyWebApi.Services
         {
             _context = context;
         }
-        public List<TrangThaiPhongMD> GetAll(PaginationParams paginationParams)
+        public PaginationModel<TrangThaiPhongMD> GetAll(PaginationParams paginationParams)
         {
             var query = _context.TrangThaiPhongs.AsQueryable();
+
+             int totalItems = query.Count();
 
             if (paginationParams != null)
             {
@@ -32,11 +34,19 @@ namespace MyWebApi.Services
                     .Take(paginationParams.PageSize);
             }
 
-            return query.Select(tt => new TrangThaiPhongMD
+            var items = query.Select(tt => new TrangThaiPhongMD
             {
                 MaTT = tt.MaTT,
                 TenTT = tt.TenTT
             }).ToList();
+
+            return new PaginationModel<TrangThaiPhongMD>
+            {
+                Items = items,
+                TotalItems = totalItems,
+                PageNumber = paginationParams.PageNumber,
+                PageSize = paginationParams.PageSize
+            };
         }
         public JsonResult GetByMaTT(int MaTT)
         {

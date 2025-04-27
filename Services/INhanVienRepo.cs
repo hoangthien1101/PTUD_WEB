@@ -9,7 +9,7 @@ namespace MyWebApi.Services
     {
         Task<JsonResult> AddNV(NhanVienVM nhanVienVM);
         JsonResult Delete(int id);
-        List<NhanVienMD> GetAll();
+        PaginationModel<NhanVienMD> GetAll(PaginationParams paginationParams);
         JsonResult GetById(int id);
         JsonResult Update(int id, NhanVienVM nhanVienVM);
     }
@@ -54,9 +54,17 @@ namespace MyWebApi.Services
                 StatusCode = StatusCodes.Status200OK
             };
         }   
-        public List<NhanVienMD> GetAll()
+        public PaginationModel<NhanVienMD> GetAll(PaginationParams paginationParams)
         {
-            var nhanViens = _context.NhanViens.Select(n => new NhanVienMD
+            var query = _context.NhanViens.AsQueryable();
+            int totalItems = query.Count();
+            if (paginationParams != null)
+            {
+                query = query
+                    .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+                    .Take(paginationParams.PageSize);
+            }
+            var items = query.Select(n => new NhanVienMD
             {
                 Id = n.Id,
                 HoTen = n.HoTen,
@@ -66,7 +74,13 @@ namespace MyWebApi.Services
                 MaVaiTro = n.MaVaiTro,
                 TrangThai = n.TrangThai
             }).ToList();
-            return nhanViens;
+            return new PaginationModel<NhanVienMD>
+            {
+                Items = items,
+                TotalItems = totalItems,
+                PageNumber = paginationParams.PageNumber,
+                PageSize = paginationParams.PageSize
+            };
         }
         public JsonResult GetById(int id)
         {

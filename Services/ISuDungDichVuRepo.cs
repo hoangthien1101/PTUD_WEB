@@ -9,7 +9,7 @@ namespace MyWebApi.Services
     {
         Task<JsonResult> AddSDDV(SuDungDichVuVM suDungDichVuVM);
         JsonResult Delete(int id);
-        List<SuDungDichVuMD> GetAll();
+        PaginationModel<SuDungDichVuMD> GetAll(PaginationParams paginationParams);
         JsonResult GetById(int id);
         JsonResult Update(int id, SuDungDichVuVM suDungDichVuVM);
     }
@@ -22,9 +22,17 @@ namespace MyWebApi.Services
             _context = context;
         }
 
-        public List<SuDungDichVuMD> GetAll()
+        public PaginationModel<SuDungDichVuMD> GetAll(PaginationParams paginationParams)
         {
-            var suDungDichVus = _context.SuDungDichVus.Select(s => new SuDungDichVuMD
+            var query = _context.SuDungDichVus.AsQueryable();
+            int totalItems = query.Count();
+            if (paginationParams != null)
+            {
+                query = query
+                    .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+                    .Take(paginationParams.PageSize);
+            }
+            var suDungDichVus = query.Select(s => new SuDungDichVuMD
             {
                 MaSDDV = s.MaSDDV,
                 MaKH = s.MaKH,
@@ -35,7 +43,13 @@ namespace MyWebApi.Services
                 TrangThai = s.TrangThai,
                 Xoa = s.Xoa 
             }).ToList();
-            return suDungDichVus;
+            return new PaginationModel<SuDungDichVuMD>
+            {
+                Items = suDungDichVus,
+                TotalItems = totalItems,
+                PageNumber = paginationParams.PageNumber,
+                PageSize = paginationParams.PageSize
+            };
         }
 
         public JsonResult GetById(int id)

@@ -10,7 +10,7 @@ namespace MyWebApi.Services
     {
         Task<JsonResult> AddGG(GiamGiaVM giamGiaVM);
         JsonResult Delete(int id);
-        List<GiamGiaMD> GetAll();
+        PaginationModel<GiamGiaMD> GetAll(PaginationParams paginationParams);
         JsonResult GetById(int id);
         JsonResult Update(int id, GiamGiaVM giamGiaVM);
     }
@@ -23,9 +23,17 @@ namespace MyWebApi.Services
             _context = context;
         }
 
-        public List<GiamGiaMD> GetAll()
+        public PaginationModel<GiamGiaMD> GetAll(PaginationParams paginationParams)
         {
-            var giamGia = _context.GiamGias.Select(g => new GiamGiaMD
+            var query = _context.GiamGias.AsQueryable();
+            int totalItems = query.Count();
+            if (paginationParams != null)
+            {
+                query = query
+                    .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+                    .Take(paginationParams.PageSize);
+            }
+            var giamGia = query.Select(g => new GiamGiaMD
             {
                 Id = g.Id,
                 TenMa = g.TenMa,
@@ -35,7 +43,13 @@ namespace MyWebApi.Services
                 NgayKetThuc = g.NgayKetThuc,
                 TrangThai = g.TrangThai
             }).ToList();
-            return giamGia;
+            return new PaginationModel<GiamGiaMD>
+            {
+                Items = giamGia,
+                TotalItems = totalItems,
+                PageNumber = paginationParams.PageNumber,
+                PageSize = paginationParams.PageSize
+            };
         }       
         
         public JsonResult GetById(int id)

@@ -10,7 +10,7 @@ namespace MyWebApi.Services
     {
         Task<JsonResult> AddCaLam(CaLamVM caLamVM);
         JsonResult Delete(int id);
-        List<CaLamMD> GetAll();
+        PaginationModel<CaLamMD> GetAll(PaginationParams paginationParams);
         JsonResult GetById(int id);
         JsonResult Update(int id, CaLamVM caLamVM);
     }
@@ -23,16 +23,30 @@ namespace MyWebApi.Services
             _context = context;
         }
 
-        public List<CaLamMD> GetAll()
+        public PaginationModel<CaLamMD> GetAll(PaginationParams paginationParams)
         {
-            var caLams = _context.CaLams.Select(c => new CaLamMD
+            var query = _context.CaLams.AsQueryable();
+            int totalItems = query.Count();
+            if (paginationParams != null)
+            {
+                query = query
+                    .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+                    .Take(paginationParams.PageSize);
+            }
+            var caLams = query.Select(c => new CaLamMD
             {
                 Id = c.Id,
                 TenCa = c.TenCa,    
                 GioBatDau = c.GioBatDau,
                 GioKetThuc = c.GioKetThuc
             }).ToList();
-            return caLams;
+            return new PaginationModel<CaLamMD>
+            {
+                Items = caLams,
+                TotalItems = totalItems,
+                PageNumber = paginationParams.PageNumber,
+                PageSize = paginationParams.PageSize
+            };
         }
 
         public JsonResult GetById(int id)

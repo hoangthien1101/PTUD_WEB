@@ -10,7 +10,7 @@ namespace MyWebApi.Services
     {
         Task<JsonResult> AddDV(DichVuVM dichVuVM);
         JsonResult Delete(int id);
-        List<DichVuMD> GetAll();
+        PaginationModel<DichVuMD> GetAll(PaginationParams paginationParams);
         JsonResult GetById(int id);
         JsonResult Update(int id, DichVuVM dichVuVM);
     }
@@ -66,9 +66,17 @@ namespace MyWebApi.Services
                 StatusCode = StatusCodes.Status200OK
             };
         }
-        public List<DichVuMD> GetAll()
+        public PaginationModel<DichVuMD> GetAll(PaginationParams paginationParams)
         {
-            var dichVu = _context.DichVus.Select(d => new DichVuMD
+            var query = _context.DichVus.AsQueryable();
+            int totalItems = query.Count();
+            if (paginationParams != null)
+            {
+                query = query
+                    .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+                    .Take(paginationParams.PageSize);
+            }
+            var dichVus = query.Select(d => new DichVuMD
             {
                 MaDichVu = d.MaDichVu,
                 Ten = d.Ten,
@@ -77,7 +85,13 @@ namespace MyWebApi.Services
                 Gia = d.Gia,
                 TrangThai = d.TrangThai
             }).ToList();
-            return dichVu;
+            return new PaginationModel<DichVuMD>
+            {
+                Items = dichVus,
+                TotalItems = totalItems,
+                PageNumber = paginationParams.PageNumber,
+                PageSize = paginationParams.PageSize
+            };
         } 
         public JsonResult GetById(int id)
         {

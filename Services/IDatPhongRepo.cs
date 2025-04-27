@@ -6,7 +6,7 @@ namespace MyWebApi.ViewModel
 {
     public interface IDatPhongRepo
     {
-        List<DatPhongMD> GetAll();
+        PaginationModel<DatPhongMD> GetAll(PaginationParams paginationParams);
         JsonResult GetById(int id);
         JsonResult Create(AddDatPhong addDatPhong);
         JsonResult Update(int id, UpdateDatPhong updateDatPhong);
@@ -22,9 +22,17 @@ namespace MyWebApi.ViewModel
             _context = context;
         }
         
-        public List<DatPhongMD> GetAll()
+        public PaginationModel<DatPhongMD> GetAll(PaginationParams paginationParams)
         {
-            var datPhongs = _context.DatPhongs.Select(dp => new DatPhongMD
+            var query = _context.DatPhongs.AsQueryable();
+            int totalItems = query.Count();
+            if (paginationParams != null)
+            {
+                query = query
+                    .Skip((paginationParams.PageNumber - 1) * paginationParams.PageSize)
+                    .Take(paginationParams.PageSize);
+            }
+            var datPhongs = query.Select(dp => new DatPhongMD
             {
                 MaDatPhong = dp.MaDatPhong,
                 MaKH = dp.MaKH,
@@ -35,7 +43,13 @@ namespace MyWebApi.ViewModel
                 TrangThai = dp.TrangThai,
                 Xoa = dp.Xoa
             }).ToList();
-            return datPhongs;
+            return new PaginationModel<DatPhongMD>
+            {
+                Items = datPhongs,
+                TotalItems = totalItems,
+                PageNumber = paginationParams.PageNumber,
+                PageSize = paginationParams.PageSize
+            };
         }
 
         public JsonResult GetById(int id)
