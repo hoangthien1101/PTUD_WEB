@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: my-aspnetcore-api
+    env: docker
+    plan: free
+    branch: deploy # hoặc main nếu bạn không dùng nhánh deploy
