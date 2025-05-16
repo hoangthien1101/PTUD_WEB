@@ -66,6 +66,7 @@ builder.Services.AddScoped<IHoaDonRepo, HoaDonRepo>();
 builder.Services.AddScoped<IChucVuRepo, ChucVuRepo>();
 builder.Services.AddScoped<ICaLamRepo, CaLamRepo>();
 builder.Services.AddScoped<IChiTietHoaDonDVRepo, ChiTietHoaDonDVRepo>();
+builder.Services.AddScoped<IDoanhThuRepo, DoanhThuRepo>();
 
 // Cấu hình kết nối database
 builder.Services.AddDbContext<AppDbContext>(options =>
