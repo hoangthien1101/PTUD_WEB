@@ -110,7 +110,7 @@ namespace MyWebApi.ViewModel
             var datPhong = new DatPhong
             {
                 MaKH = addDatPhong.MaKH,
-                MaPhong = addDatPhong.MaPhong,  
+                MaPhong = addDatPhong.MaPhong,
                 NgayDat = DateTime.Now,
                 CheckIn = addDatPhong.CheckIn,
                 CheckOut = addDatPhong.CheckOut,
@@ -119,7 +119,23 @@ namespace MyWebApi.ViewModel
             };  
             _context.DatPhongs.Add(datPhong);
             _context.SaveChanges();
-            return new JsonResult(datPhong)
+
+            // Lấy thông tin phòng sau khi lưu
+            var phong = _context.Phongs.FirstOrDefault(p => p.MaPhong == datPhong.MaPhong);
+            var result = new
+            {
+                datPhong.MaDatPhong,
+                datPhong.MaKH,
+                datPhong.MaPhong,
+                SoPhong = phong?.SoPhong,
+                datPhong.NgayDat,
+                datPhong.CheckIn,
+                datPhong.CheckOut,
+                datPhong.TrangThai,
+                datPhong.Xoa
+            };
+
+            return new JsonResult(result)
             {
                 StatusCode = StatusCodes.Status201Created
             };
