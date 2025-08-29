@@ -26,6 +26,13 @@ namespace MyWebApi.Controllers
             return Ok(users);
         }
 
+        [HttpGet("GetbyId/{MaTK}")]
+        public IActionResult GetbyId(int MaTK)
+        {
+            var users = _userRepo.GetbyId(MaTK);
+            return Ok(users);
+        }
+
         [HttpGet("check")]
         public IActionResult CheckUser(string check)
         {

@@ -12,6 +12,7 @@ namespace MyWebApi.Services
     public interface IUserRepo
     {
         PaginationModel<UserVM> GetAll(PaginationParams paginationParams);
+        JsonResult GetbyId(int MaTK);
         Task<JsonResult> AddUser(AddUser uservm);
         LoginVM CheckUser(string check);
         JsonResult EditUser(string TenTK, EditUser edituser);
@@ -63,6 +64,30 @@ namespace MyWebApi.Services
                 TotalItems = totalItems,
                 PageNumber = paginationParams.PageNumber,
                 PageSize = paginationParams.PageSize
+            };
+        }
+        public JsonResult GetbyId(int MaTK)
+        {
+            var user = _context.TaiKhoans.Include(c => c.VaiTro).FirstOrDefault(c => c.MaTK == MaTK);
+            if (user == null)
+            {
+                return new JsonResult("User không tồn tại")
+                {
+                    StatusCode = StatusCodes.Status404NotFound
+                };
+            }
+            var userVM = new UserVM
+            {
+                MaTK = user.MaTK,
+                TenTK = user.TenTK,
+                HinhAnh = user.HinhAnh,
+                TenHienThi = user.TenHienThi,
+                Phone = user.Phone,
+                Email = user.Email,
+            };
+            return new JsonResult(userVM)
+            {
+                StatusCode = StatusCodes.Status200OK
             };
         }
         public LoginVM CheckUser(string? check = null)

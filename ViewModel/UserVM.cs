@@ -39,7 +39,6 @@ namespace MyWebApi.ViewModel
 
     public class RegisterUser
     {
-        public int MaTK { get; set; }
         public string? TenTK { get; set; }
         public string? MatKhau { get; set; }
         public string? ReMatKhau { get; set; }
